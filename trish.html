@@ -55,7 +55,7 @@
     color: transparent;
     text-align: center;
     margin-top: 30px;
-    line-height: 1.1; /* Fixes "h" cutting off */
+    line-height: 1.1; /* Fixes "h" clipping */
   }
 
   .heart-field {
@@ -91,21 +91,21 @@
 
   .content-wrapper {
     width: 100%;
-    height: calc(100% - 180px); 
+    height: calc(100% - 180px);
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 40px; /* Ensures space between containers */
+    gap: 40px;
     padding: 0 20px;
     box-sizing: border-box;
   }
 
-  /* Quote Card with floating animation */
+  /* Quote Card */
   .quote-card {
     width: 100%;
-    max-width: 540px; /* Reduced for TVs */
+    max-width: 540px;
     min-width: 320px;
-    height: 400px;
+    height: 400px; /* Fixed height */
     background: var(--glass);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
@@ -113,7 +113,7 @@
     padding: 20px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start; /* Keep text top-aligned */
     text-align: center;
     box-sizing: border-box;
     animation: floatCard 4s ease-in-out infinite alternate;
@@ -123,24 +123,65 @@
     100% { transform: translateY(-12px); }
   }
 
-  .quote-heading { font-weight:600; margin-bottom:10px; font-size:22px; opacity:0.8; }
-  .quote-text { font-family: "Playfair Display", serif; font-size:20px; line-height:1.4; word-wrap: break-word; flex:1; display:flex; align-items:center; justify-content:center; }
-  .caret { border-right:2px solid var(--primary); animation: blink 1s infinite; }
+  .quote-heading { 
+    font-weight:600; 
+    margin-bottom:12px; 
+    font-size:22px; 
+    opacity:0.8; 
+  }
+
+  .quote-text {
+    font-family: "Playfair Display", serif;
+    font-size: 20px;
+    line-height: 1.4;
+    word-wrap: break-word;
+    white-space: normal; /* Allow wrapping */
+    overflow-wrap: break-word;
+    height: 250px; /* Fixed space for text */
+    overflow: hidden; /* Prevent text from overflowing */
+    display: block;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .caret { 
+    border-right:2px solid var(--primary); 
+    animation: blink 1s infinite; 
+  }
+
   @keyframes blink { 50% { opacity:0; } }
-  .quote-controls { display:flex; justify-content:center; gap:12px; margin-top:12px; }
-  .icon-btn { cursor:pointer; background:var(--glass); border:1px solid rgba(255,255,255,0.2); padding:8px; border-radius:50%; box-shadow: var(--shadow); transition:transform .3s; color:var(--primary); font-size:18px; }
+
+  .quote-controls {
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    margin-top:10px;
+  }
+
+  .icon-btn { 
+    cursor:pointer;
+    background:var(--glass);
+    border:1px solid rgba(255,255,255,0.2);
+    padding:8px;
+    border-radius:50%;
+    box-shadow: var(--shadow);
+    transition:transform .3s;
+    color:var(--primary);
+    font-size:18px;
+  }
   .icon-btn:hover { transform:scale(1.2); }
 
-  /* Spotify Player with pulsing glow */
+  /* Spotify Player */
   .spotify-player {
     width: 100%;
-    max-width: 540px; /* Reduced for TVs */
+    max-width: 540px;
     min-width: 320px;
-    height: 400px; /* Always same height as card */
+    height: 400px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
+
   .spotify-player .wrapper {
     width:100%;
     height:100%;
@@ -152,13 +193,20 @@
     box-sizing: border-box;
     animation: glowPulse 2.5s ease-in-out infinite alternate;
   }
-  .spotify-player iframe { width:100%; height:100%; border-radius:12px; border:0; }
+
+  .spotify-player iframe {
+    width:100%;
+    height:100%;
+    border-radius:12px;
+    border:0;
+  }
+
   @keyframes glowPulse {
     0% { box-shadow: 0 0 20px rgba(255,105,180,0.4); }
     100% { box-shadow: 0 0 50px rgba(255,105,180,0.8); }
   }
 
-  /* Responsive tweaks for Smart TVs and smaller screens */
+  /* Responsive tweaks */
   @media screen and (max-width: 1250px) {
     .quote-card,
     .spotify-player {
@@ -175,6 +223,9 @@
     .spotify-player {
       max-width: 420px;
       height: 340px;
+    }
+    .quote-text {
+      height: 210px; /* Adjusted for smaller cards */
     }
     .content-wrapper {
       gap: 25px;
@@ -238,7 +289,7 @@
 
   // Typewriter quotes
   const quotes = [
-    "In your smile, I see something more beautiful than stars",
+    "In your smile, I see something more beautiful than stars.",
     "You are my today and all of my tomorrows.",
     "Every moment with you is a soft kind of forever.",
     "I love you not only for what you are, but for what I am with you.",
