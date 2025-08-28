@@ -55,8 +55,7 @@
     color: transparent;
     text-align: center;
     margin-top: 30px;
-    line-height: 1.0;
-    
+    line-height: 1.1; /* Fixes "h" cutting off */
   }
 
   .heart-field {
@@ -94,16 +93,18 @@
     width: 100%;
     height: calc(100% - 180px); 
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    padding: 0 40px;
+    gap: 40px; /* Ensures space between containers */
+    padding: 0 20px;
     box-sizing: border-box;
   }
 
   /* Quote Card with floating animation */
   .quote-card {
-    width: 600px;
-    min-width: 350px;
+    width: 100%;
+    max-width: 540px; /* Reduced for TVs */
+    min-width: 320px;
     height: 400px;
     background: var(--glass);
     border-radius: var(--radius);
@@ -122,24 +123,25 @@
     100% { transform: translateY(-12px); }
   }
 
-  .quote-heading{ font-weight:600; margin-bottom:10px; font-size:22px; opacity:0.8; }
-  .quote-text{ font-family: "Playfair Display", serif; font-size:20px; line-height:1.4; word-wrap: break-word; flex:1; display:flex; align-items:center; justify-content:center; }
-  .caret{ border-right:2px solid var(--primary); animation: blink 1s infinite;}
-  @keyframes blink{50%{opacity:0;}}
-  .quote-controls{ display:flex; justify-content:center; gap:12px; margin-top:12px; }
-  .icon-btn{ cursor:pointer; background:var(--glass); border:1px solid rgba(255,255,255,0.2); padding:8px; border-radius:50%; box-shadow: var(--shadow); transition:transform .3s; color:var(--primary); font-size:18px; }
-  .icon-btn:hover{ transform:scale(1.2); }
+  .quote-heading { font-weight:600; margin-bottom:10px; font-size:22px; opacity:0.8; }
+  .quote-text { font-family: "Playfair Display", serif; font-size:20px; line-height:1.4; word-wrap: break-word; flex:1; display:flex; align-items:center; justify-content:center; }
+  .caret { border-right:2px solid var(--primary); animation: blink 1s infinite; }
+  @keyframes blink { 50% { opacity:0; } }
+  .quote-controls { display:flex; justify-content:center; gap:12px; margin-top:12px; }
+  .icon-btn { cursor:pointer; background:var(--glass); border:1px solid rgba(255,255,255,0.2); padding:8px; border-radius:50%; box-shadow: var(--shadow); transition:transform .3s; color:var(--primary); font-size:18px; }
+  .icon-btn:hover { transform:scale(1.2); }
 
   /* Spotify Player with pulsing glow */
   .spotify-player {
-    width: 600px;
-    min-width: 350px;
-    height: 400px;
+    width: 100%;
+    max-width: 540px; /* Reduced for TVs */
+    min-width: 320px;
+    height: 400px; /* Always same height as card */
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  .spotify-player .wrapper{
+  .spotify-player .wrapper {
     width:100%;
     height:100%;
     background: linear-gradient(135deg, #ff85b3, #ff6fa5, #ff9ecf);
@@ -150,10 +152,33 @@
     box-sizing: border-box;
     animation: glowPulse 2.5s ease-in-out infinite alternate;
   }
-  .spotify-player iframe{ width:100%; height:100%; border-radius:12px; border:0;}
+  .spotify-player iframe { width:100%; height:100%; border-radius:12px; border:0; }
   @keyframes glowPulse {
     0% { box-shadow: 0 0 20px rgba(255,105,180,0.4); }
     100% { box-shadow: 0 0 50px rgba(255,105,180,0.8); }
+  }
+
+  /* Responsive tweaks for Smart TVs and smaller screens */
+  @media screen and (max-width: 1250px) {
+    .quote-card,
+    .spotify-player {
+      max-width: 480px;
+      height: 360px;
+    }
+    .content-wrapper {
+      gap: 30px;
+    }
+  }
+
+  @media screen and (max-width: 1080px) {
+    .quote-card,
+    .spotify-player {
+      max-width: 420px;
+      height: 340px;
+    }
+    .content-wrapper {
+      gap: 25px;
+    }
   }
 </style>
 </head>
@@ -180,7 +205,6 @@
   <section class="spotify-player">
     <div class="wrapper">
       <iframe 
-        data-testid="embed-iframe"
         src="https://open.spotify.com/embed/playlist/1E1WEPKoQD90dpGG4j7bdD?utm_source=generator&theme=0"
         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
         allowfullscreen>
@@ -213,55 +237,56 @@
   })();
 
   // Typewriter quotes
-  const quotes=[
+  const quotes = [
     "In your smile, I see something more beautiful than stars",
-"You are my today and all of my tomorrows.",
-"Every moment with you is a soft kind of forever.",
-"I love you not only for what you are, but for what I am with you.",
-"You make my heart do the happiest little dances."
-];
+    "You are my today and all of my tomorrows.",
+    "Every moment with you is a soft kind of forever.",
+    "I love you not only for what you are, but for what I am with you.",
+    "You make my heart do the happiest little dances."
+  ];
 
-const typedEl = document.getElementById('typed');
-const pauseBtn = document.getElementById('pauseBtn');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
+  const typedEl = document.getElementById('typed');
+  const pauseBtn = document.getElementById('pauseBtn');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
 
-let qIndex = 0, charIndex = 0, deleting = false, paused = false;
-const cycleDelay = 1500, typeSpeed = 38, deleteSpeed = 26;
+  let qIndex = 0, charIndex = 0, deleting = false, paused = false;
+  const cycleDelay = 1500, typeSpeed = 38, deleteSpeed = 26;
 
-function typeLoop() {
-if (paused) { requestAnimationFrame(typeLoop); return; }
-const current = quotes[qIndex];
-if (!deleting) {
-typedEl.textContent = current.slice(0, ++charIndex);
-if (charIndex === current.length) {
-deleting = true;
-setTimeout(() => requestAnimationFrame(typeLoop), cycleDelay);
-return;
-}
-setTimeout(() => requestAnimationFrame(typeLoop), typeSpeed);
-} else {
-typedEl.textContent = current.slice(0, --charIndex);
-if (charIndex === 0) {
-deleting = false;
-qIndex = (qIndex + 1) % quotes.length;
-}
-setTimeout(() => requestAnimationFrame(typeLoop), deleteSpeed);
-}
-}
+  function typeLoop() {
+    if (paused) { requestAnimationFrame(typeLoop); return; }
+    const current = quotes[qIndex];
+    if (!deleting) {
+      typedEl.textContent = current.slice(0, ++charIndex);
+      if (charIndex === current.length) {
+        deleting = true;
+        setTimeout(() => requestAnimationFrame(typeLoop), cycleDelay);
+        return;
+      }
+      setTimeout(() => requestAnimationFrame(typeLoop), typeSpeed);
+    } else {
+      typedEl.textContent = current.slice(0, --charIndex);
+      if (charIndex === 0) {
+        deleting = false;
+        qIndex = (qIndex + 1) % quotes.length;
+      }
+      setTimeout(() => requestAnimationFrame(typeLoop), deleteSpeed);
+    }
+  }
 
-pauseBtn.addEventListener('click', () => {
-paused = !paused;
-pauseBtn.innerHTML = paused ? '<i class="fas fa-play"></i>' : '<i class="fas fa-pause"></i>';
-});
-prevBtn.addEventListener('click', () => {
-deleting = false; charIndex = 0; qIndex = (qIndex - 1 + quotes.length) % quotes.length;
-});
-nextBtn.addEventListener('click', () => {
-deleting = false; charIndex = 0; qIndex = (qIndex + 1) % quotes.length;
-});
+  pauseBtn.addEventListener('click', () => {
+    paused = !paused;
+    pauseBtn.innerHTML = paused ? '<i class="fas fa-play"></i>' : '<i class="fas fa-pause"></i>';
+  });
+  prevBtn.addEventListener('click', () => {
+    deleting = false; charIndex = 0; qIndex = (qIndex - 1 + quotes.length) % quotes.length;
+  });
+  nextBtn.addEventListener('click', () => {
+    deleting = false; charIndex = 0; qIndex = (qIndex + 1) % quotes.length;
+  });
 
-requestAnimationFrame(typeLoop);
+  requestAnimationFrame(typeLoop);
 </script>
 
-</body> </html>
+</body>
+</html>
